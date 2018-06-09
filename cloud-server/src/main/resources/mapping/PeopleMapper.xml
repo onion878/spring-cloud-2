@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.org.onion.mapper.PeopleDao">
+    <resultMap id="BaseResultMap" type="com.org.onion.model.People">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getOne" parameterType="Int" resultMap="BaseResultMap">
+      SELECT * FROM people WHERE id=#{id}
+    </select>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT * FROM people
+    </select>
+
+    <select id="save" parameterType="com.org.onion.model.People">
+        INSERT INTO people( name) values (#{name})
+    </select>
+</mapper>

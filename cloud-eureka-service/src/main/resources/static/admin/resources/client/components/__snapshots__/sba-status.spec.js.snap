@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`application-status should match the snapshot with custom status 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status DOWN 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status OFFLINE 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status OUT_OF_SERVICE 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status RESTRICTED 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status UNKNOWN 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <!---->
+</div>
+`;
+
+exports[`application-status should match the snapshot with status UP with Timestamp 1`] = `
+<div
+  class="application-status"
+>
+  <!---->
+   
+  <small>
+    14m
+  </small>
+</div>
+`;

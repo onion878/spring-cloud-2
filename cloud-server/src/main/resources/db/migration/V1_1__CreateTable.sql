@@ -1,0 +1,1 @@
+insert into people(name) value ('init flyway');

@@ -15,7 +15,11 @@
   -->
 
 <template>
-  <div class="section logfile-view" :class="{ 'is-loading' : !hasLoaded }">
+  <div class="section logfile-view" :class="{ 'is-loading' : !hasLoaded }" @contextmenu="openMenu">
+    <ul id="right-click-menu" ref="right" tabindex="1" v-if="viewMenu" @blur="closeMenu" :style="{top:top, left:left}">
+      <li @click="clearMsg">清空</li>
+      <li @click="setFlag" v-text="flag? '暂停': '继续'"/>
+    </ul>
     <div v-if="error" class="message is-danger">
       <div class="message-body">
         <strong>
@@ -38,6 +42,7 @@
     </div>
     <p v-if="skippedBytes" v-text="`skipped ${prettyBytes(skippedBytes)}`"/>
     <!-- log will be appended here -->
+    <div ref="content"/>
   </div>
 </template>
 
@@ -61,7 +66,12 @@
       error: null,
       atBottom: true,
       atTop: false,
-      skippedBytes: null
+      skippedBytes: null,
+      viewMenu: false,
+      top: '0px',
+      color: 'blue',
+      flag: true,
+      left: '0px'
     }),
     mounted() {
       window.addEventListener('scroll', this.onScroll);
@@ -83,9 +93,14 @@
             next: lines => {
               vm.hasLoaded = true;
               lines.forEach(line => {
+                if(!vm.flag) return;
                 const child = document.createElement('pre');
+                if(line.indexOf('ERROR') > -1) vm.color = 'red';
+                if(line.indexOf('WARN') > -1) vm.color = '#9da906';
+                if(line.indexOf('INFO') > -1) vm.color = 'blue';
+                child.style.color = vm.color;
                 child.textContent = line;
-                vm.$el.appendChild(child);
+                vm.$refs.content.appendChild(child);
               });
 
               if (vm.atBottom) {
@@ -110,6 +125,33 @@
       },
       scrollToBottom() {
         document.scrollingElement.scrollTop = document.scrollingElement.scrollHeight;
+      },
+      setMenu: function(top, left) {
+        const largestHeight = window.innerHeight - this.$refs.right.offsetHeight - 25;
+        const largestWidth = window.innerWidth - this.$refs.right.offsetWidth - 25;
+        if (top > largestHeight) top = largestHeight;
+        if (left > largestWidth) left = largestWidth;
+        this.top = top + 'px';
+        this.left = left + 'px';
+        this.$refs.right.focus();
+      },
+      closeMenu: function() {
+        this.viewMenu = false;
+      },
+      openMenu: function(e) {
+        this.viewMenu = true;
+        this.$nextTick(function() {
+           this.setMenu(e.y, e.x);
+        }.bind(this));
+        e.preventDefault();
+      },
+      clearMsg: function () {
+        this.viewMenu = false;
+        this.$refs.content.innerHTML = '';
+      },
+      setFlag: function () {
+        this.flag = !this.flag;
+        this.viewMenu = false;
       }
     }
   }
@@ -144,6 +186,30 @@
         justify-content: space-between;
         margin-right: 0.5rem;
       }
+    }
+
+    #right-click-menu{
+      background: #FAFAFA;
+      border: 1px solid #BDBDBD;
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+      position: sticky;
+      width: 120px;
+    }
+
+    #right-click-menu li {
+      border-bottom: 1px solid #E0E0E0;
+      margin: 0;
+      padding: 5px 15px;
+    }
+
+    #right-click-menu li:last-child {
+      border-bottom: none;
+    }
+
+    #right-click-menu li:hover {
+      background: #1E88E5;
+      color: #FAFAFA;
+      cursor: pointer;
     }
   }
 

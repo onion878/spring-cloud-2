@@ -15,11 +15,7 @@
   -->
 
 <template>
-  <div class="section logfile-view" :class="{ 'is-loading' : !hasLoaded }" @contextmenu="openMenu">
-    <ul id="right-click-menu" ref="right" tabindex="1" v-if="viewMenu" @blur="closeMenu" :style="{top:top, left:left}">
-      <li @click="clearMsg">清空</li>
-      <li @click="setFlag" v-text="flag? '暂停': '继续'"/>
-    </ul>
+  <div class="section logfile-view" :class="{ 'is-loading' : !hasLoaded }">
     <div v-if="error" class="message is-danger">
       <div class="message-body">
         <strong>
@@ -38,6 +34,9 @@
       </div>
       <a class="button" v-if="instance" :href="`instances/${instance.id}/logfile`" target="_blank">
         <font-awesome-icon icon="download"/>&nbsp;Download
+      </a>
+      <a class="button" v-if="instance" href="javascript:void(0)" @click="clearMsg" target="_blank">
+        <font-awesome-icon icon="remove"/>&nbsp;Clear
       </a>
     </div>
     <p v-if="skippedBytes" v-text="`skipped ${prettyBytes(skippedBytes)}`"/>
@@ -126,25 +125,6 @@
       scrollToBottom() {
         document.scrollingElement.scrollTop = document.scrollingElement.scrollHeight;
       },
-      setMenu: function(top, left) {
-        const largestHeight = window.innerHeight - this.$refs.right.offsetHeight - 25;
-        const largestWidth = window.innerWidth - this.$refs.right.offsetWidth - 25;
-        if (top > largestHeight) top = largestHeight;
-        if (left > largestWidth) left = largestWidth;
-        this.top = top + 'px';
-        this.left = left + 'px';
-        this.$refs.right.focus();
-      },
-      closeMenu: function() {
-        this.viewMenu = false;
-      },
-      openMenu: function(e) {
-        this.viewMenu = true;
-        this.$nextTick(function() {
-           this.setMenu(e.y, e.x);
-        }.bind(this));
-        e.preventDefault();
-      },
       clearMsg: function () {
         this.viewMenu = false;
         this.$refs.content.innerHTML = '';
@@ -186,30 +166,6 @@
         justify-content: space-between;
         margin-right: 0.5rem;
       }
-    }
-
-    #right-click-menu{
-      background: #FAFAFA;
-      border: 1px solid #BDBDBD;
-      box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-      position: sticky;
-      width: 120px;
-    }
-
-    #right-click-menu li {
-      border-bottom: 1px solid #E0E0E0;
-      margin: 0;
-      padding: 5px 15px;
-    }
-
-    #right-click-menu li:last-child {
-      border-bottom: none;
-    }
-
-    #right-click-menu li:hover {
-      background: #1E88E5;
-      color: #FAFAFA;
-      cursor: pointer;
     }
   }
 
